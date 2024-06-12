@@ -1,0 +1,20 @@
+{
+  "database": [
+    {
+      "fullName": "Linh",
+      "gender": "Nữ",
+      "dateOfBirth": "22/2/1999",
+      "image": "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+      "trangthai": true,
+      "id": "6a23"
+    },
+    {
+      "fullName": "Ngọc Trinh",
+      "gender": "Nữ",
+      "dateOfBirth": "22/2/2003",
+      "image": "https://static.vecteezy.com/system/resources/previews/011/459/669/original/people-avatar-icon-png.png",
+      "trangthai": false,
+      "id": "a728"
+    }
+  ]
+}
