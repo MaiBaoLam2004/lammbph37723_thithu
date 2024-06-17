@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Switch } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TextInput, Button, StyleSheet, Switch} from 'react-native';
 
-const AddProduct = ({ navigation, route }) => {
-  const { user } = route.params;
+const AddProduct = ({navigation, route}) => {
+  const {user} = route.params;
 
   const [fullName, setFullName] = useState('');
   const [gender, setGender] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [image, setImage] = useState('');
-  const [trangthai, setTrangthai] = useState(true);
+  const [dateOfYear, setDateOfYear] = useState('');
+  // const [trangthai, setTrangthai] = useState(true);
+  const [dateOfYearError, setDateOfYearError] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -16,21 +18,32 @@ const AddProduct = ({ navigation, route }) => {
       setGender(user.gender);
       setDateOfBirth(user.dateOfBirth);
       setImage(user.image);
-      setTrangthai(user.trangthai);
+      setDateOfYear(user.dateOfYear);
+      // setTrangthai(user.trangthai);
     }
   }, [user]);
 
   const handleSubmit = () => {
+
+    // kiểm tra năm học phải là số
+    // // Clear previous error
+    // setDateOfYearError('');
+    // // Validate dateOfYear
+    // if (isNaN(dateOfYear)) {
+    //   setDateOfYearError('Năm học phải là số');
+    //   return;
+    // }
+
     const data = {
       fullName,
       gender,
       dateOfBirth,
       image,
-      trangthai,
+      dateOfYear,
     };
 
     if (user) {
-      // Nếu có user, đây là việc cập nhật
+      // Update existing user
       fetch(`http://192.168.1.100:3000/database/${user.id}`, {
         method: 'PUT',
         headers: {
@@ -45,7 +58,7 @@ const AddProduct = ({ navigation, route }) => {
         })
         .catch(error => console.error('Error:', error));
     } else {
-      // Nếu không có user, đây là việc thêm mới
+      // Add new user
       fetch('http://192.168.1.100:3000/database', {
         method: 'POST',
         headers: {
@@ -64,7 +77,9 @@ const AddProduct = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{user ? 'Chỉnh sửa thông tin người dùng' : 'Thêm người dùng mới'}</Text>
+      <Text style={styles.header}>
+        {user ? 'Chỉnh sửa thông tin người dùng' : 'Thêm người dùng mới'}
+      </Text>
       <TextInput
         style={styles.input}
         placeholder="Họ và tên"
@@ -85,18 +100,29 @@ const AddProduct = ({ navigation, route }) => {
       />
       <TextInput
         style={styles.input}
+        placeholder="Năm học"
+        value={dateOfYear}
+        onChangeText={setDateOfYear}
+      />
+      {/* lệnh kiểm tra năm học khi ấn thêm là chữ */}
+      {/* {dateOfYearError ? (
+        <Text style={styles.errorText}>{dateOfYearError}</Text>
+      ) : null} */}
+      
+      <TextInput
+        style={styles.input}
         placeholder="URL Hình ảnh"
         value={image}
         onChangeText={setImage}
       />
-      <View style={styles.switchContainer}>
+      {/* <View style={styles.switchContainer}>
         <Text>Trạng thái:</Text>
         <Switch
           value={trangthai}
           onValueChange={setTrangthai}
         />
         <Text>{trangthai ? 'Chính thức' : 'Thử việc'}</Text>
-      </View>
+      </View> */}
       <Button title={user ? 'Cập nhật' : 'Thêm'} onPress={handleSubmit} />
     </View>
   );
@@ -125,6 +151,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 

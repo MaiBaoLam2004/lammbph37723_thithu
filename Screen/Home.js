@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Button,
   Alert,
+  TextInput,
 } from 'react-native';
 import Modal from 'react-native-modal';
 
@@ -75,7 +76,10 @@ const Home = ({navigation}) => {
       </TouchableOpacity>
       <Text style={styles.textfont}>Giới tính: {item.gender}</Text>
       <Text style={styles.textfont}>Ngày sinh: {item.dateOfBirth}</Text>
-      <Text style={styles.textfont}>Trạng thái: {item.trangthai ? 'Chính thức' : 'Thử việc'}</Text>
+      <Text style={styles.textfont}>Năm học: {item.dateOfYear}</Text>
+      {/* <Text style={styles.textfont}>
+        Trạng thái: {item.trangthai ? 'Chính thức' : 'Thử việc'}
+      </Text> */}
       <View style={styles.buttonContainer}>
         <Button title="Sửa" onPress={() => handleEdit(item)} />
         <Button title="Xóa" onPress={() => confirmDelete(item)} />
@@ -83,15 +87,38 @@ const Home = ({navigation}) => {
     </View>
   );
 
+  // tìm kiếm ở đây, theo tên
+  const [searchQuery, setSearchQuery] = useState('');
+  const filteredData = data.filter(item =>
+    item.fullName.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Danh sách người dùng</Text>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Tìm kiếm theo tên..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
+      {/* có tìm kiếm */}
       <FlatList
-        data={data}
+        data={filteredData}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.userList}
       />
+
+      {/* ko có tìm kiếm */}
+      {/* <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={item => item.id.toString()}
+        contentContainerStyle={styles.userList}
+      /> */}
+
       <TouchableOpacity
         style={styles.fab}
         onPress={() => navigation.navigate('AddProduct', {user: null})}>
@@ -107,16 +134,22 @@ const Home = ({navigation}) => {
                 style={styles.userImage}
               />
               <Text style={styles.userName}>{selectedEmployee.fullName}</Text>
-              <Text style={styles.textfont}>Giới tính: {selectedEmployee.gender}</Text>
-              <Text style={styles.textfont}>Ngày sinh: {selectedEmployee.dateOfBirth}</Text>
               <Text style={styles.textfont}>
+                Giới tính: {selectedEmployee.gender}
+              </Text>
+              <Text style={styles.textfont}>
+                Ngày sinh: {selectedEmployee.dateOfBirth}
+              </Text>
+              <Text style={styles.textfont}>
+                Năm học: {selectedEmployee.dateOfYear}
+              </Text>
+              {/* <Text style={styles.textfont}>
                 Trạng thái:{' '}
                 {selectedEmployee.trangthai ? 'Chính thức' : 'Thử việc'}
-              </Text>
+              </Text> */}
               <View style={{marginTop: 20}}>
-                <Button  title="Đóng" onPress={() => setModalVisible(false)} />
+                <Button title="Đóng" onPress={() => setModalVisible(false)} />
               </View>
-              
             </>
           )}
         </View>
@@ -190,17 +223,24 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
-  buttonContainer:{
+  buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    marginTop: 30
+    marginTop: 30,
   },
-  textfont:{
+  textfont: {
     fontSize: 18,
     fontWeight: 'bold',
-    margin: 5
-  }
+    margin: 5,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    marginBottom: 16,
+  },
 });
 
 export default Home;
